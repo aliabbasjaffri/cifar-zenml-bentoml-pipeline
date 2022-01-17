@@ -1,0 +1,9 @@
+venv/
+
+data/
+
+.zen
+
+.idea/
+
+__pycache__/
