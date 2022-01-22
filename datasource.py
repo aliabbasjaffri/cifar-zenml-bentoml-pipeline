@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import torchvision
 import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
 
@@ -18,28 +19,32 @@ classes = [
     "truck"
 ]
 
+transform = transforms.Compose(
+    [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+)
 
-def get_dataset() -> (torch.utils.data.DataLoader, torch.utils.data.DataLoader):
-    transform = transforms.Compose(
-        [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
-    )
 
+def get_trainset() -> DataLoader:
     trainset = torchvision.datasets.CIFAR10(
         root="./data", train=True, download=True, transform=transform
     )
 
-    trainloader = torch.utils.data.DataLoader(
+    trainloader = DataLoader(
         trainset, batch_size=4, shuffle=True, num_workers=8
     )
 
+    return trainloader
+
+
+def get_testset() -> DataLoader:
     testset = torchvision.datasets.CIFAR10(
         root="./data", train=False, download=True, transform=transform
     )
-    testloader = torch.utils.data.DataLoader(
+    testloader = DataLoader(
         testset, batch_size=4, shuffle=False, num_workers=8
     )
 
-    return trainloader, testloader
+    return testloader
 
 
 def imshow(img) -> None:
@@ -52,7 +57,8 @@ def imshow(img) -> None:
 if __name__ == "__main__":
     # get data
 
-    trainloader, testloader = get_dataset()
+    trainloader = get_trainset()
+    testloader = get_testset()
 
     # get some random training images
 

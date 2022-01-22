@@ -5,3 +5,4 @@ pillow==7.2.0
 zenml
 black
 matplotlib
+numpy

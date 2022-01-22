@@ -3,14 +3,14 @@ from network import Net
 import torch.optim as optim
 
 
-def CIFAR_trainer(train_loader) -> Net:
+def cifar_trainer(train_loader) -> Net:
     net = Net()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     for epoch in range(1):  # loop over the dataset multiple times
-
         running_loss = 0.0
+        print(train_loader)
         for i, data in enumerate(train_loader, 0):
             # get the inputs; data is a list of [inputs, labels]
             inputs, _labels = data
@@ -38,4 +38,4 @@ if __name__ == "__main__":
     from datasource import *
 
     train_loader, test_loader = get_dataset()
-    net = CIFAR_trainer(train_loader)
+    net = cifar_trainer(train_loader)
