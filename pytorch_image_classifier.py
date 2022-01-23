@@ -35,7 +35,7 @@ class PytorchImageClassifier(bentoml.BentoService):
         return [classes[output_class] for output_class in output_classes]
 
 
-def save_classifier(net):
+def save_classifier(net) -> None:
     # 2) `pack` it with required artifacts
     bento_svc = PytorchImageClassifier()
     bento_svc.pack("net", net)
