@@ -1,16 +1,17 @@
 from datasource import get_trainset, get_testset
 import torch
 from torch.nn import Module
-from pytorch_image_classifier import save_classifier
+from pytorch_image_classifier import PytorchImageClassifier
 from trainer import cifar_trainer
-
 from zenml.pipelines import pipeline
 from zenml.steps import step
 
 
 @step
 def trainer() -> Module:
-    """A simple pytorch Model to train on the data."""
+    """
+    A simple pytorch Model to train on the data.
+    """
     train = get_trainset()
     network = cifar_trainer(train)
     return network
@@ -20,7 +21,9 @@ def trainer() -> Module:
 def evaluator(
     net: Module
 ) -> float:
-    """Calculate the accuracy on the test set"""
+    """
+    Calculate the accuracy on the test set
+    """
     correct = 0
     total = 0
     test_loader = get_testset()
@@ -41,14 +44,17 @@ def evaluator(
 
 
 @step
-def save_model(network: Module) -> Module:
+def save_model(net: Module):
     """
     Saves model in BentoML format
-    :param network: The model that is learned during the training
-    :return: Nothing
+    :param net: The model that is learned during the training
     """
-    save_classifier(network)
-    return network
+    bento_svc = PytorchImageClassifier()
+    bento_svc.pack("net", net)
+
+    # 3) save your BentoService to file archive
+    saved_path = bento_svc.save()
+    print(saved_path)
 
 
 @pipeline
@@ -59,9 +65,9 @@ def cifar_pipeline(
 ):
     """Links all the steps together in a pipeline"""
 
-    network = _trainer()
-    _evaluator(network)
-    _save_model(network)
+    net = _trainer()
+    _evaluator(net)
+    _save_model(net)
 
 
 if __name__ == "__main__":
